@@ -1,18 +1,21 @@
 The spec in this repo will describe the following:
 
-Proposed Architecture
-=====================
+## Proposed Architecture ##
 
 
 The basic architecture of a client side test in the Web Platform Tests system is this:
 
+```
+
   WEB BROWSER   <----->  CHILD WINDOW
   MAIN WINDOW            FOR INDIVIDUAL TEST
+```
 
 The main window acts as the driver, opening up a child window and populating it with data from the web test server (HTML, JS, etc).  In fully automated tests, some JS then evaluates the DOM or the network activity or whatever, then decides if the test passed or failed.  The JS API is well documented here [5].
 
 My concept for ARIA tests would augment this general flow like this:
 
+```
   WEB BROWSER   <----->  CHILD WINDOW         <----- HTTP TO ------>  WPTSERVE  <---> ARIA TEST CASES
   MAIN WINDOW            FOR INDIVIDUAL TEST         TEST SERVER                      IN HTML AND JS
                                ^ 
@@ -21,6 +24,7 @@ My concept for ARIA tests would augment this general flow like this:
                                |  
                                v
                           LOCAL ATTA  
+```
 
 The local ATTA is an "Assistive Technology Test Adapter".  It acts as a "fake" assistive technology client that attaches the AT API of the platform under test - the one on which the browser is running.  It listens on an HTTP socket on localhost for information about the window under test and the test criteria, then responds to the HTTP request with information about the success or failure of each test criteria.  The CHILD WINDOW then uses that response to record the result of the test.  If there are multiple tests for a given CHILD WINDOW (e.g., if the test needs to do some setup, then change state, then check that the state change is reflected) it will send additional information to the ATTA.  Otherwise it tells the MAIN WINDOW that it is done.  The MAIN WINDOW then cycles to the next test in the sequence and we continue.
 
@@ -37,39 +41,41 @@ This section documents the structure of that JavaScript Object and the expectati
 
 This parameter to the ATTAcomm constructor is a JSON object shaped like this:
 
+```
   { "title": "A title for the overall test case",
     "steps": [
-    {
-      "type":    "test", (this is the default and may be omitted)
-      "title":   "What is being checked",
-      "element": "ID_OF_ELEMENT",
-      "test" :  {
-        "APINAME": [
-          [ 
-            "role" | "state" | "object" | "event",
-            "itemName",
-            "expectedLiteral" | "<undefined>" | "<defined>" 
+      {
+        "type":    "test", (this is the default and may be omitted)
+        "title":   "What is being checked",
+        "element": "ID_OF_ELEMENT",
+        "test" :  {
+          "APINAME": [
+            [ 
+              "role" | "state" | "object" | "event",
+              "itemName",
+              "expectedLiteral" | "<undefined>" | "<defined>" 
+            ],...
+          ],
+          "API2NAME": [ ...
           ],...
-        ],
-        "API2NAME": [ ...
-        ],...
-    },
-    {
-      "type":    "script",
-      "script":  "Eval-able JavaScript (e.g., to change the state of something in the DOM)"
-    },
-    {
-      "type":    "event",
-      "element": "ID_OF_ELEMENT",
-      "event":   "event name (event will be triggered on element)"
-    },
-    {
-      "title":   "Second thing being checked",
-      "element": "ID_OF_ELEMENT",
-      "test" : ...
-    },...
-  ]
+      },
+      {
+        "type":    "script",
+        "script":  "Eval-able JavaScript (e.g., to change the state of something in the DOM)"
+      },
+      {
+        "type":    "event",
+        "element": "ID_OF_ELEMENT",
+        "event":   "event name (event will be triggered on element)"
+      },
+      {
+        "title":   "Second thing being checked",
+        "element": "ID_OF_ELEMENT",
+        "test" : ...
+      },...
+    ]
   }
+```
 
 Where:
 
@@ -81,25 +87,25 @@ Where:
 ; `script` : A block of JS that can be 'evalled' in the context of the test window to perform some DOM operation.
 ; `subtests` : A hash of A11Y API names where each entry is a list of assertions to be evaluated by the ATTA that claims to support the API with the corresponding `APINAME`.  Details on the layout of those assertions are defined below.
 
-==== Per-Platform Structures ====
+### Per-Platform Structures ###
 
 Each platform ATTA has unique requirements for the format of the assertions.  A script will extract these structures from the tables in the [[ARIA 1.1 Testable Statements|ARIA 1.1 Testable Statements page]] and ensure they are in the proper format to feed into each ATTA. Note that if an ATTA receives an assertion that is in an unexpected format or is otherwise impossible to evaluate, the ATTA SHOULD return a result of "ERROR" and a message explaining the processing failure. 
 
-===== ATK =====
+#### ATK ####
 
-===== AXAPI =====
+#### AXAPI ####
 
-=====iAccessible2 =====
+#### iAccessible2 ####
 
-===== MSAA =====
+#### MSAA ####
 
-===== UIA =====
+#### UIA ####
 
-=== ATTA Commands ===
+### ATTA Commands ###
 
 The ATTA URI specifies a base URI for accessing the URI (by default, localhost listening on port 4119).  The environment must provide appropriate CORS headers so that the user agent does not prevent access to the information being returned by the ATTA.  Each ATTA command below is accessed in a RESTful fashion (e.g., ATTAuri + "/start").
 
-==== start Command ====
+#### start Command ####
 
 `start` - new test starting; Parameters in a JSON object are:
 
@@ -115,7 +121,7 @@ Response should be a JSON structure that includes:
 * API - Name of the API supported by the ATTA
 * APIversion - version of the API supported by the ATTA
 
-==== test Command ====
+#### test Command ####
 
 Individual 'test statements' within a test file.  Parameters in a JSON object are:
 
@@ -147,29 +153,29 @@ A result of "ERROR" means the ATTA was unable to perform some task related to th
 
 * Unable to evaluate test condition
 
-==== end Command ====
+#### end Command ####
 
 Tests in this file are complete.  No parameters
 
-=== Example Dialog ===
+### Example Dialog ##
 
 When a test starts up, it loads the ATTAconn.js script.  This script is initialized with information about the specific test. Once that is loaded, the test does the following:
 
-# Start a test - note that if this connection fails within a short timeout period, then the test reverts to "manual" mode.  The test will present information adequate for someone to manually inspect the A11Y structures and determine whether the overall test passes or fails.  However, we are designing for automation, so:
-#* Send the 'start' command
-#* ATTA confirms it can attach to the test window and responds with the name of the API under test and a status of "READY".  NOTE: If the ATTA does not respond with READY the system will act as if there is no ATTA available.
-# Set focus on the correct element (if required)
-# Test an assertion
-#* Send the 'test' command along with the data for the API supported by the ATTA
-#* Respond with the result of the evaluation
-# Repeat steps 3 and 4 until all the assertions in the testable statements for a given test are complete.
-# Complete the test
-#* Send the 'end' command
-# Close out the test with WPT and continue to the next test case - repeating steps 1-5 until all selected tests are complete.
+1. Start a test - note that if this connection fails within a short timeout period, then the test reverts to "manual" mode.  The test will present information adequate for someone to manually inspect the A11Y structures and determine whether the overall test passes or fails.  However, we are designing for automation, so:
+  * Send the 'start' command
+  * ATTA confirms it can attach to the test window and responds with the name of the API under test and a status of "READY".  NOTE: If the ATTA does not respond with READY the system will act as if there is no ATTA available.
+2. Set focus on the correct element (if required)
+3. Test an assertion
+  * Send the 'test' command along with the data for the API supported by the ATTA
+  * Respond with the result of the evaluation
+4. Repeat steps 3 and 4 until all the assertions in the testable statements for a given test are complete.
+5. Complete the test
+  * Send the 'end' command
+6. Close out the test with WPT and continue to the next test case - repeating steps 1-5 until all selected tests are complete.
 
 For each assertion above / result above, the ATTAcomm.js creates a WPT "subtest" for which it records the assertion being tested, the result of testing, and any messages that might have come in.  The overall, or aggregate, result of a "test" is the worst result of all the subtests that were executed (e.g., if there is 1 FAIL, the test FAILS.  If they all PASS, the test passes).
 
-=== Running the Tests ===
+### Running the Tests ###
 
 Tests are run using WPT's "runner" (and other mechanisms, but let's focus on this one).  Runner will run ANYTHING in the WPT tree, including the wai-aria tests when we get them in there.  Here is what the run interface looks like having executed a couple of tests using the architecture above:
 
