@@ -3,7 +3,8 @@
 	<head>
 		<title>Accessible Technology Test Adapter API</title>
 		<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
-    <script src='https://www.w3.org/Tools/respec/respec-w3c-common' async="async" class='remove'></script>
+<!--    <script src='https://www.w3.org/Tools/respec/respec-w3c-common' async="async" class='remove'></script> -->
+        <script src='respec.js' async="async" class='remove'></script>
 		<script class="remove">
 var respecConfig = {
     // specification status (e.g., WD, LCWD, NOTE, etc.). If in doubt use ED.
@@ -73,13 +74,46 @@ var respecConfig = {
 	</head>
 	<body>
 		<section id="abstract">
-			<p>This document presents an architecture, messaging,  and communication protocol that enables
-      interaction between the [[Web-Protocol-Tests]] framework and the Accessibility API on any
-      platform.</p>
+			<p>This document presents an architecture and attendant components that together enable
+      interaction between the [[Web-Protocol-Tests]] framework, the [[testharness.js]] library that is part of that
+      framework, and the Accessibility API on any platform.  It is loosely based upon work done in the ARIA Working Group
+      and its ancestor Protocols and Formats Working Group, but takes its inspriation from the way that the various Accessibility
+      API Mapping specifications provide for a consistent way to expose and interrogate aspects of essentially any window
+      on any platform.</p>
 		</section>
 		<section id="sotd">
         <p>This is a very drafty document intended to be a place to capture the definition of the
         architecture as it is developed.</p>
 		</section>
+    <section id="introduction">
+      <h2>Introduction</h2>
+    </section>
+    <section>
+      <h2>Theory of Operation</h2>
+    </section>
+    <section>
+      <h2>Testable Statements</h2>
+    </section>
+    <section>
+      <h2>Test Cases</h2>
+      <section>
+        <h3>Simple Tests</h3>
+      </section>
+      <section>
+        <h3>Events</h3>
+      </section>
+      <section>
+        <h3>Scripts</h3>
+      </section>
+    </section>
+    <section>
+      <h2>Accessible Technology Test Adapter</h2>
+      <section>
+        <h3>Protocol</h3>
+      </section>
+      <section>
+        <h3>Messages</h3>
+      </section>
+    </section>
 	</body>
 </html>
