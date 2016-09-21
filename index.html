@@ -206,10 +206,50 @@ then role: grid, celcount: 2, rowcount: 3
   </section>
   <section>
     <h3>Events</h3>
+    <p>@@@TODO@@@</p>
   </section>
   <section>
     <h3>Scripts</h3>
+    <p>@@@TODO@@@</p>
   </section>
+</section>
+<section>
+  <h2>ATTAcomm.js - ATTA communication library</h2>
+  <p>ATTAcomm.js is a Javascript library that works in conjunction with the WPT
+  testrunner.js to setup and teardown tests, communicate with the ATTA, perform
+  local actions within a test window, and report the results of the testing to WPT.
+  The library has a constructor that returns the object and also performs the
+  testing if there is an ATTA available.</p>
+  <pre class="idl">
+    interface ATTAcomm {
+      attribute testDefinition theTest;
+    } ;
+
+    dictionary testDefinition {
+      required DOMString title;
+      required sequence&lt;testStep&gt; steps;
+    };
+
+    dictionary testStep {
+      DOMString type = "test";
+      required DOMString title;
+      required DOMString element;
+      FrozenArray&lt;APImap&gt; test;
+    };
+
+    dictionary APImap {
+      required APIList APIName;
+      required FrozenArray&lt;Assertion&gt; tests;
+    };
+
+    dictionary Assertion {
+      required assertionType type;
+      required assertionName name;
+      assertionValue value;
+    };
+
+    enum APIList { "MSAA", "ATK", "iAccessible2", "UIA", "AXAPI" } ;
+  </pre>
 </section>
 <section>
   <h2>Accessible Technology Test Adapter</h2>
