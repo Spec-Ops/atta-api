@@ -11,16 +11,19 @@ skinparam sequence {
 }
 
 Actor Tester
+box "Scope of testing"
 Participant "WPT Run Interface" as wpt
 Participant "Test Window" as test
 Participant "ATTA" as atta
-Participant "AT API" as atapi
+Participant "Platform\nA11Y Layer" as atapi
+end box
 
+== Startup ==
 Tester->wpt: Select tests
 wpt->Tester: Shows matching test count
 Tester->wpt: Start Test
 
-group For each test selected
+== Repeat ==
 
   wpt->test: Load test case
 
@@ -58,10 +61,9 @@ group For each test selected
   test->wpt: Deliver results of each "subtest"
 
   wpt->Tester: Update table of results
-end
+
+== Complete ==
 
 wpt->Tester: Make results available in JSON
-
-title WPT Dialog with ATTA
 
 @enduml

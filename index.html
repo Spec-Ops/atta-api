@@ -132,21 +132,25 @@ then role: grid, celcount: 2, rowcount: 3
   <pre class="example">
   |-
   |rowspan=4|ATK
+  |property
   |role
+  |is
   |ROLE_TABLE
-  |true
   |-
-  |object
-  |xml-roles
-  |grid
+  |property
+  |objectAttributes
+  |contains
+  |xml-roles:grid
   |-
-  |interface
+  |property
+  |interfaces
+  |contains
   |Table
-  |&lt;shown>
   |-
+  |property
   |interface
+  |contains
   |Selection
-  |&lt;shown>
   </pre>
 
   <p>This is an example of a MediaWiki-style table fragment.  In this case it is a
@@ -166,25 +170,30 @@ then role: grid, celcount: 2, rowcount: 3
           "test" : {
              "ATK" : [
                 [
+
+                   "property"
                    "role",
-                   "ROLE_TABLE",
-                   "true"
+                   "is",
+                   "ROLE_TABLE"
                 ],
                 [
-                   "attribute",
-                   "xml-roles:grid",
-                   "true"
+                   "property"
+                   "objectAttributes",
+                   "contains",
+                   "xml-roles:grid"
                 ],
                 [
+                   "property"
+                   "interfaces",
+                   "contains",
+                   "Table"
+                ],
+                [
+                   "property",
                    "interface",
-                   "Table",
-                   "true"
-                ],
-                [
-                   "interface",
-                   "Selection",
-                   "true"
-                ],
+                   "contains",
+                   "Selection"
+                ]
              ],
              ....
           }
@@ -195,22 +204,67 @@ then role: grid, celcount: 2, rowcount: 3
 
 </section>
 <section>
-  <h2>Test Cases</h2>
+  <h2>Test Steps</h2>
+  <p>A test case is a series of test steps.  Each step has a type,
+  the default for which is "assertions".  This section defines each
+  of the types and how those should be expressed in a test case
+  file.</p>
   <section>
-    <h3>Simple Tests</h3>
+    <h3>assertions</h3>
     <p>A <dfn>Simple Test</dfn> is a test in which the ATTA only needs to interrogate
     the state of various Accessible Technology roles, states, properties, methods, or
     events on the platform.  Each platform has its own collection of these
     that are documented in the various <a>Accessibility API Mapping</a>
-    specifications and the specification of the platform <a>Accessibility API</a>.
+    specifications and the specification of the platform
+    <a>Accessibility API</a>.</p>
+    <pre class="hilite">
+    {
+      "type":  "test",
+      "title": "busy true",
+      "element": "test",
+      "test" : {
+         "ATK" : [
+            [
+               "property",
+               "interfaces",
+               "doesNotContain",
+               "Selection"
+            ],
+            [
+               "property",
+               "states",
+               "contains",
+               "STATE_BUSY"
+            ]
+         ]
+      }
+    }
+    </pre>
   </section>
   <section>
-    <h3>Events</h3>
-    <p>@@@TODO@@@</p>
+    <h3>event</h3>
+    <p>An "event" script is a declarative way to fire an event at a
+    specific element.</p>
+    <pre>
+    {
+      "type": "event",
+      "element": "test",
+      "event": "focus"
+    }
+    </pre>
   </section>
   <section>
-    <h3>Scripts</h3>
-    <p>@@@TODO@@@</p>
+    <h3>script</h3>
+    <p>A "script" step includes javascript code that will be
+    executed in the context of the test child window.</p>
+    <pre>
+    {
+      "type": "script",
+      "title": "change busy",
+      "script": "{ var el = document.getElementById('test'); \
+                   if (el) { el.setAttribute('aria-busy', true); } }"
+    }
+    </pre>
   </section>
 </section>
 <section>
@@ -248,7 +302,7 @@ then role: grid, celcount: 2, rowcount: 3
       assertionValue value;
     };
 
-    enum APIList { "MSAA", "ATK", "iAccessible2", "UIA", "AXAPI" } ;
+    enum APIList { "MSAA", "ATK", "IAccessible2", "UIA", "AXAPI" } ;
   </pre>
 </section>
 <section>
@@ -260,20 +314,71 @@ then role: grid, celcount: 2, rowcount: 3
     RESTful.  Instead, it uses JSON messages and wraps them in a simple
     request where the path portion indicates that command. A typical
     conversation between the ATTA and the Framework might look like this:</p>
+  <img style="width: 95%; align: center" src="atta-flow.svg" alt="Communication between Test, Library, and ATTA">
   </section>
   <section>
     <h3>Message Structure</h3>
+    <p>Queries and responses are all in JSON.</p>
   </section>
   <section>
     <h3>Commands</h3>
     <section>
       <h4>start</h4>
+      <p>The start message is designed to ensure that the ATTA is
+      ready, that it can find the window under test, and also to
+      help ATTAcomm understand which API and API version is
+      supported.</p>
+      <p class="title">Request</p>
+      <pre class="example">
+      {
+        "test":  "name of the overall test case",
+        "url":   "url from which the content is loaded"
+      }
+      </pre>
+      <p class="title">Response</p>
+      <pre class="example">
+      {
+        "status":      "READY",
+        "statusText":  "",
+        "ATTAname":    "WPT Sample ATTA",
+        "ATTAversion": 1,
+        "API":         myAPI,
+        "APIversion":  myAPIversion
+      }
+      </pre>
     </section>
     <section>
       <h4>test</h4>
+      <p>The test message contains one or more assertions that the
+      ATTA is to evaluate against the <a>Accessibility API</a>.  For
+      each assertion in the request, the ATTA is to return
+      information on the result of checking the assertion.</p>
+      <p class="title">Request</p>
+      <pre class="example">
+      {
+        "test":  "name of the overall test case",
+        "url":   "url from which the content is loaded"
+      }
+      </pre>
+      <p class="title">Response</p>
+      <pre class="example">
+      {
+        "status":      "READY",
+        "statusText":  "",
+        "ATTAname":    "WPT Sample ATTA",
+        "ATTAversion": 1,
+        "API":         myAPI,
+        "APIversion":  myAPIversion
+      }
+      </pre>
     </section>
     <section>
       <h4>end</h4>
+      <p>The end message just indicates the current test case is
+      complete.  It has no payload and expects nothing in the
+      response. The <a>ATTA</a> SHOULD do a complete cleanup of
+      anything in its environment before it replies to the
+      message.</p>
     </section>
   </section>
 </section>
