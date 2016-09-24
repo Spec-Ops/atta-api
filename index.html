@@ -10,6 +10,9 @@ var respecConfig = {
     // specification status (e.g., WD, LCWD, NOTE, etc.). If in doubt use ED.
     specStatus:           "ED",
     processVersion:       "2005",
+    includePermalinks:    true,
+    permalinkEdge:        true,
+    permalinkHide:        false,
 
     // the specification's short name, as in http://www.w3.org/TR/short-name/
     shortName:            "atta-api",
@@ -43,7 +46,8 @@ var respecConfig = {
         company: "Igalia, S.L.",
         companyURI: "http://www.igalia.com"
       },
-                { name: "Shane McCarron", url: 'https://www.spec-ops.io',
+                { name: "Shane McCarron", url: 'https://www.spec-ops.io', 
+                  mailto: "shane@spec-ops.io",
                   company: "Spec-Ops", companyURL: "https://www.spec-ops.io" }
     ],
 
@@ -51,7 +55,7 @@ var respecConfig = {
     wg:           "Accessibility Platorm Architecture",
 
     // URI of the public WG page
-    wgURI:        "https://www.w3.org/WAI/APA/",
+    wgURI:        "https://www.w3.org/WAI/ARIA/",
 
     // name (with the @w3c.org) of the public mailing to which comments are due
     wgPublicList: "public-apa",
@@ -90,12 +94,38 @@ var respecConfig = {
 </section>
 <section id="introduction">
   <h2>Introduction</h2>
-  @@@@TODO@@@@
+  <p>Historically, testing of aspects of the web platform that are
+  outside of the user agent have been very challenging.  Such
+  testing requires specialized test rigs, platform unique
+  instrumentation, etc.  Often the use of such tooling is helpful,
+  but still does not enable fully automated testing of those aspects
+  in a way that is portable or scales well.  In these situations,
+  manual testing has been required. Previous testing of the ARIA
+  Specification(s) and related <a>accessibility api mappings</a>
+  fell into this category.</p>
+  <p>This specification defines a mechanism whereby any platform
+  that supports Web Platform Accessibility and exposes that support
+  through a platform <a>Accessibility API</a> can be tested
+  automatically.  In addition, it defines a simplified declarative
+  grammar that can be used to define the tests themselves &emdash;
+  thereby simplifying the overall task of writing the tests in the
+  first place.
+  </p>
+
+  <p>This document starts out describing the way testing at the W3C
+  operates for most of the web platform, then illustrates the way in
+  which it is extended through the facilities defined herein.  After
+  that it provides specifications for each of the components of the
+  system and their interactions with one another.  Finally, it
+  discusses some ways in which the system could be extended in the
+  future to further ease test development and make the testing more
+  thorough.</p>
 </section>
 <section>
   <h2>Theory of Operation</h2>
-  <p>In <a>WPT</a> a parent window controls
-  the selection of tests, and then opens a child window to execute the
+  <p>In <a>WPT</a> a <dfn>parent window</dfn> controls
+  the selection of tests, and then opens a 
+  <dfn data-lt='test window'>child window</dfn> to execute the
   selected tests.  That child window uses a Javascript library to control test
   sequencing, reporting, management if windows, etc.  For most tests, that model looks
   something like this:</p>
@@ -112,11 +142,32 @@ var respecConfig = {
   <p>A testable statement is a simple assertion about the behavior of a system
   that, when examined, should evaluate to true.  In the case of ARIA
   specifications, the testable statements are maintained in various wikis.
-  The include this assertion, and also include
+  They include this assertion, and also include
   supporting information to inform the test system which aspects of the underlying
   systems need to be examined to evaluate the assertion.</p>
+  <p class="note">It is possible that in some environments an ATTA will 
+  not be be available. Consequently, additional properties of the
+  Testable Statement can help a manual tester understand how to
+  perform a similar test without ATTA assistance.  Examples include
+  the <code>URL</code> and <code>description</code> properties
+  mentioned below.</p>
   <p>Consider the following example:</p>
   <pre class="example">
+== Testable Statements for ARIA 1.1 features ==
+
+SpecURL:  https://www.w3.org/TR/wai-aria11
+
+=== gridcell ===
+
+==== Description ====
+
+When an element has a role with a value of 'grid', its aria-rowcount
+and aria-colcount attributes descibe the dimensions of the grid
+represented by that element and its contents.
+
+Reference: #some_id
+
+&lt;pre&gt;
 If given
   &lt;div role='grid' id='test' aria-rowcount='3' aria-colcount='2'&gt;
    &lt;div role='row'&gt;
@@ -126,10 +177,13 @@ If given
    &lt;/div&gt;
   &lt;/div&gt;
 then role: grid, celcount: 2, rowcount: 3
+&lt;/pre&gt;
   </pre>
-  <p>This example presents an HTML fragment and conditions that should be met.
+  <p>This example presents a description of the test's purpose, a
+  reference to the section of the specification that defines the
+  behavior under test, and an HTML fragment and conditions that should be met.
   Beyond this, the testable statement needs to show how these conditions are
-  evaluated through each defined API mapping. An example of one such would be:</p>
+  evaluated through each defined <a>API mapping</a>. An example of one such would be:</p>
   <pre class="example">
   |-
   |rowspan=4|ATK
@@ -156,13 +210,15 @@ then role: grid, celcount: 2, rowcount: 3
 
   <p>This is an example of a MediaWiki-style table fragment.  In this case it is a
   series of rows and columns that describe the various items that the ATK ATTA
-  will evaluate.  The WPT ARIA test generator tool will parse tables like this and
-  generate an HTML file containing a JSON representation of the data structured
+  will evaluate.  The WPT ARIA test generator tool parse tables like this and
+  generates an HTML file containing a JSON representation of the data structured
   in such a way that it can be processed by the <a>ATTA Communication Module</a>.
   The JSON for the examples above looks like:</p>
 
   <pre class="example">
     { "title": 'grid',
+      "reference": 'https://www.w3.org/TR/wai-aria11#some_id',
+      "description": "When an element has a role with a value of 'grid', its aria-rowcount and aria-colcount attributes descibe the dimensions of the grid represented by that element and its contents.",
       "steps": [
       {
         "type":  "test",
@@ -185,6 +241,18 @@ then role: grid, celcount: 2, rowcount: 3
                 ],
                 [
                    "property"
+                   "objectAttributes",
+                   "contains",
+                   "rowcount:3:,
+                ],
+                [
+                   "property"
+                   "objectAttributes",
+                   "contains",
+                   "colcount:2:,
+                ],
+                [
+                   "property"
                    "interfaces",
                    "contains",
                    "Table"
@@ -203,9 +271,29 @@ then role: grid, celcount: 2, rowcount: 3
     }
   </pre>
 
+  <p>The system with automatically generate [[WPT]] compatible test
+  cases that are formatted as defined in this specification.  Test
+  cases can also be written by hand.  Examples and a template are
+  available in the <code>wai-aria/tools</code> directory of the WPT
+  github repository.</p>
+
+  <p class="note">
+  The architecture of this system allows for multiple "steps" per
+  test (see <a>Test Steps</a>).  The current syntax structure for
+  Testable Statements does not allow for the expression of
+  multiple "steps". It is possible that this will be added in the
+  future.</p>
+
+  <p class="note">
+  In the future, it is possible that that the detailed per-platform
+  API assertions will be automatically created from a basic
+  assertion by applying the rules from the <a>Accessibility API Mapping</a>
+  document associated with each specification.   See <a>Future
+      Plans</a> for more information.
+  </p>
 </section>
-<section>
-  <h2>Test Steps</h2>
+<section id="S_test_steps">
+  <h2><dfn>Test Steps</dfn></h2>
   <p>A test case is a series of test steps.  Each step has a type,
   the default for which is "assertions".  This section defines each
   of the types and how those should be expressed in a test case
@@ -244,13 +332,14 @@ then role: grid, celcount: 2, rowcount: 3
   </section>
   <section>
     <h3>event</h3>
-    <p>An "event" script is a declarative way to fire an event at a
+    <p>An "event" entry is a declarative way to fire an event at a
     specific element.</p>
     <pre>
     {
       "type": "event",
       "element": "test",
-      "event": "focus"
+      "event": "focus",
+      "description": "Fire a focus event at the element with an ID attribute value of 'test'"
     }
     </pre>
   </section>
@@ -269,7 +358,7 @@ then role: grid, celcount: 2, rowcount: 3
   </section>
 </section>
 <section>
-  <h2>ATTAcomm.js - ATTA communication library</h2>
+    <h2><dfn data-lt="atta communication module">ATTAcomm.js - ATTA communication library</dfn></h2>
   <p>ATTAcomm.js is a Javascript library that works in conjunction with the WPT
   testrunner.js to setup and teardown tests, communicate with the ATTA, perform
   local actions within a test window, and report the results of the testing to WPT.
@@ -393,9 +482,6 @@ then role: grid, celcount: 2, rowcount: 3
     evaluates them against the characteristics of the <a>child window</a> to
     help evaluate the conformance of the <a>platform accessibility API</a> to
     the requirements in related W3C Recommendations.</dd>
-    <dt><dfn>child window</dfn></dt>
-    <dd>A window opened by the WPT test runner in which test cases are loaded
-    and executed.</dd>
     <dt><dfn><abbr title="Web Platform Tests">WPT</abbr></dfn></dt>
     <dd>The collection of tests and tools that the W3C relies upon to exercise
     the Web Platform (where that is the collection of technologies that
@@ -411,6 +497,10 @@ then role: grid, celcount: 2, rowcount: 3
     <p>Operating systems and other platforms provide a set of interfaces that expose information about <a class="termref" data-lt="object">objects</a> and <a class="termref" data-lt="event">events</a> to <a>assistive technologies</a>. Assistive technologies use these interfaces to get information about and interact with those <a class="termref" data-lt="widget">widgets</a>. Examples of accessibility APIs are <a href="https://msdn.microsoft.com/en-us/library/ms697270(VS.85).aspx">Microsoft Active Accessibility</a> [[MSAA]], <a href="https://msdn.microsoft.com/en-us/library/ee684013%28VS.85%29.aspx">Microsoft User Interface Automation</a> [[UI-AUTOMATION]], <abbr title="Microsoft Active Accessibility">MSAA</abbr> with <cite><a href="https://msdn.microsoft.com/en-us/library/windows/desktop/dd561898(v=vs.85).aspx"><abbr title="User Interface Automation">UIA</abbr> Express</a></cite> [[UIA-EXPRESS]], the
     <a href="https://developer.apple.com/library/mac/documentation/Cocoa/Reference/ApplicationKit/Protocols/NSAccessibility_Protocol/index.html">Mac <abbr title="OS Ten">OS X</abbr> Accessibility Protocol</a> [[AXAPI]], the <cite><a href="https://developer.gnome.org/atk/unstable/">Linux/Unix Accessibility Toolkit</a></cite> [[ATK]] and <cite><a href="https://developer.gnome.org/libatspi/stable/">Assistive Technology Service Provider Interface</a></cite> [[AT-SPI]], and <a href="http://www.linuxfoundation.org/collaborate/workgroups/accessibility/iaccessible2">IAccessible2</a> [[IAccessible2]].</p>
     </dd>
+    <dt><dfn data-lt="api mappings|api mapping|accessibility api mappings">Accessibility <abbr>API</abbr> Mapping</dfn></dt>
+    <dd>A specification that defines the relationship between ARIA
+    roles, properties, states, and events to their corresponding
+    aspects of a specific platform's implementation.</dt>
     <dt><dfn>Accessibility Subtree</dfn></dt>
     <dd>
     <p>An <a>accessible object</a> in the <a>accessibility tree</a> and its descendants in that tree. It does not include objects which have relationships other than parent-child in that tree. For example, it does not include objects linked via <pref>aria-flowto</pref> unless those objects are also descendants in the <a>accessibility tree</a>.</p>
@@ -610,9 +700,10 @@ then role: grid, celcount: 2, rowcount: 3
     </dd>
   </dl>
 </section>
-<section class="appendix">
-    <h2>Future Plans</h2>
+<section id="S_future_plans" class="appendix">
+    <h2><dfn>Future Plans</dfn></h2>
     <p>This section is meant to capture plans about the evolution of
     this interface.</p>
 </body>
 </html>
+<!-- vim: ts=2 sw=2 ai wm=10: -->
