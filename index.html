@@ -291,6 +291,50 @@ then role: grid, celcount: 2, rowcount: 3
   document associated with each specification.   See <a>Future
       Plans</a> for more information.
   </p>
+  <section id="S_assertions">
+    <h3>Assertions</h3>
+    <p>Each <a>platform accessibility API</a> has unique facilities.  The per-platform
+    API assertion <i>structure</i> is identical, but the contents are necessarily different.  The
+    general structure is:</p>
+
+    <dl>
+      <dt>Test Class</dt>
+      <dd>The category of thing being tested.  Examples include a <i>property</i>, <i>result</i> (of
+      a method call), or <i>event</i>.</dd>
+      <dt>Test Type</dt>
+      <dd>The <i>type</i> within the <i>Test Class</i>.  Examples include <i>role</i>, <i>name</i>,
+      <i>subrole</i>, etc.</dd>
+      <dt>Assertion Type</dt>
+      <dd>A <i>verb</i> that indicates how the assertion should be evaluated.  These include
+      <code>is</code>,
+      <code>isNot</code>,
+      <code>contains</code>,
+      <code>doesNotContain</code>,
+      <code>isType</code>, and
+      <code>isAny</code>.</dd>A
+      <dt>Value</dt>
+      <dd>A value (or value list) against which to evaluate using ASSERTION TYPE. If there are 
+      multiple values, they are enclosed in brackets and separated with commas (e.g. [value1, value2,
+      value3]).</dd>
+    </dl>
+    
+    <p>The remainder of this section defines the specific contents.</p>
+
+    <section id="S_assertions_ATK">
+      <h4>ATK Assertion Contents</h4>
+    </section>
+    <section id="S_assertions_AXAPI">
+      <h4>AXAPI Assertion Contents</h4>
+    </section>
+    <section id="S_assertions_IA2">
+      <h4>IAccessible2 Assertion Contents</h4>
+    </section>
+    <section id="S_assertions_MSAA">
+      <h4>MSAA Assertion Contents</h4>
+    </section>
+    <section id="S_assertions_UIA">
+      <h4>UIA Assertion Contents</h4>
+    </section>
 </section>
 <section id="S_test_steps">
   <h2><dfn>Test Steps</dfn></h2>
@@ -706,4 +750,5 @@ then role: grid, celcount: 2, rowcount: 3
     this interface.</p>
 </body>
 </html>
-<!-- vim: ts=2 sw=2 ai wm=10: -->
+<!-- vim: ts=2 sw=2 ai wm=10: 
+-->
