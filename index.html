@@ -46,7 +46,7 @@ var respecConfig = {
         company: "Igalia, S.L.",
         companyURI: "http://www.igalia.com"
       },
-                { name: "Shane McCarron", url: 'https://www.spec-ops.io', 
+                { name: "Shane McCarron", url: 'https://www.spec-ops.io',
                   mailto: "shane@spec-ops.io",
                   company: "Spec-Ops", companyURL: "https://www.spec-ops.io" }
     ],
@@ -124,7 +124,7 @@ var respecConfig = {
 <section>
   <h2>Theory of Operation</h2>
   <p>In <a>WPT</a> a <dfn>parent window</dfn> controls
-  the selection of tests, and then opens a 
+  the selection of tests, and then opens a
   <dfn data-lt='test window'>child window</dfn> to execute the
   selected tests.  That child window uses a Javascript library to control test
   sequencing, reporting, management if windows, etc.  For most tests, that model looks
@@ -145,7 +145,7 @@ var respecConfig = {
   They include this assertion, and also include
   supporting information to inform the test system which aspects of the underlying
   systems need to be examined to evaluate the assertion.</p>
-  <p class="note">It is possible that in some environments an ATTA will 
+  <p class="note">It is possible that in some environments an ATTA will
   not be be available. Consequently, additional properties of the
   Testable Statement can help a manual tester understand how to
   perform a similar test without ATTA assistance.  Examples include
@@ -311,13 +311,13 @@ then role: grid, celcount: 2, rowcount: 3
       <code>contains</code>,
       <code>doesNotContain</code>,
       <code>isType</code>, and
-      <code>isAny</code>.</dd>A
+      <code>isAny</code>.</dd>
       <dt>Value</dt>
-      <dd>A value (or value list) against which to evaluate using ASSERTION TYPE. If there are 
+      <dd>A value (or value list) against which to evaluate using ASSERTION TYPE. If there are
       multiple values, they are enclosed in brackets and separated with commas (e.g. [value1, value2,
       value3]).</dd>
     </dl>
-    
+
     <p>The remainder of this section defines the specific contents.</p>
 
     <section id="S_assertions_ATK">
@@ -545,7 +545,7 @@ then role: grid, celcount: 2, rowcount: 3
     <dt><dfn data-lt="api mappings|api mapping|accessibility api mappings">Accessibility <abbr>API</abbr> Mapping</dfn></dt>
     <dd>A specification that defines the relationship between ARIA
     roles, properties, states, and events to their corresponding
-    aspects of a specific platform's implementation.</dt>
+    aspects of a specific platform's implementation.</dd>
     <dt><dfn>Accessibility Subtree</dfn></dt>
     <dd>
     <p>An <a>accessible object</a> in the <a>accessibility tree</a> and its descendants in that tree. It does not include objects which have relationships other than parent-child in that tree. For example, it does not include objects linked via <pref>aria-flowto</pref> unless those objects are also descendants in the <a>accessibility tree</a>.</p>
@@ -746,10 +746,11 @@ then role: grid, celcount: 2, rowcount: 3
   </dl>
 </section>
 <section id="S_future_plans" class="appendix">
-    <h2><dfn>Future Plans</dfn></h2>
-    <p>This section is meant to capture plans about the evolution of
-    this interface.</p>
+  <h2><dfn>Future Plans</dfn></h2>
+  <p>This section is meant to capture plans about the evolution of
+  this interface.</p>
+</section>
 </body>
 </html>
-<!-- vim: ts=2 sw=2 ai wm=10: 
+<!-- vim: ts=2 sw=2 ai wm=10:
 -->
