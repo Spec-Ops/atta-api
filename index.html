@@ -469,15 +469,44 @@ then role: grid, celcount: 2, rowcount: 3
       ready, that it can find the window under test, and also to
       help ATTAcomm understand which API and API version is
       supported.</p>
-      <p class="title">Request</p>
-      <pre class="example">
+      <dl>
+        <dt>test</dt>
+        <dd>The name of the overall test case</dd>
+        <dt>url</dt>
+        <dd>The url the test case was loaded from</dd>
+      </dl>
+
+      <p>The reply for this message takes the form:</p>
+      <dl>
+        <dt>status</dt>
+        <dd>In indication of whether the ATTA could find the window in 
+        which the test will take place given the test name and url.  Values are 
+        <code>READY</code> or <code>ERROR</code></dd>
+        <dt>statusText</dt>
+        <dd>A message about any error</dd>
+        <dt>ATTAname</dt>
+        <dd>The name of the ATTA</dd>
+        <dt>ATTAversion</dt>
+        <dd>A version string about the ATTA</dd>
+        <dt>API</dt>
+        <dd>The name of the <a>Accessibility API</a> supported by ATTA</dd>
+        <dt>APIversion<dt>
+        <dd>A version string about the Accessibility API</dd>
+        <dt>log</dt>
+        <dd>optional, ATTA-specific information about the
+        accessibility tree associated with the window being
+        evaluated.  This SHOULD be preformatted information that
+        can be embedded by the <a>ATTA Communication Module</a>
+        in the test page to assist a test developer in developing or
+        debugging a test.</dd>
+      </dl>
+      <pre class="example" title="Example start request">
       {
         "test":  "name of the overall test case",
         "url":   "url from which the content is loaded"
       }
       </pre>
-      <p class="title">Response</p>
-      <pre class="example">
+      <pre class="example" title="Example start response">
       {
         "status":      "READY",
         "statusText":  "",
@@ -533,7 +562,7 @@ then role: grid, celcount: 2, rowcount: 3
         <code>ERROR</code></dd>
         <dt>statusText</dt>
         <dd>A message about any error</dd>
-        <dt>logdata</dt>
+        <dt>log</dt>
         <dd>optional, ATTA-specific information about the
         acceswsibility tree associated with the element being
         evaluated.  This SHOULD be preformatted information that
@@ -547,7 +576,7 @@ then role: grid, celcount: 2, rowcount: 3
         <ol start="0">
           <li>result (one of PASS or FAIL)</li>
           <li>message (information that explains a failure)</li>
-          <li>logdata (optional ATTA-specific information showing
+          <li>logging (optional ATTA-specific information showing
           information about the acessibility tree that was
           examined when evaluating the assertion. Used when
           debugging or developing tests.)</li>
@@ -556,22 +585,21 @@ then role: grid, celcount: 2, rowcount: 3
       </dl>
       <pre class="example" title="Example test request">
       {
-        "name": "subtest name",
-        "id":   "id of element to check",
-          "data": [
-            [ "thingClass", "thingType", "thingAssertion", "thingValue" ],
-            [ "thingClass", "thingType", "thingAssertion", "thingValue" ]
-         ]
+        "name":      "subtest name",
+        "element":   "id of element to check",
+        "data":      [ [ "thingClass", "thingType", "thingAssertion", "thingValue" ],
+                       [ "thingClass", "thingType", "thingAssertion", "thingValue" ]
+                     ]
       }
       </pre>
       <pre class="example" title="Example test response">
       {
-        "status":      "READY",
+        "status":      "OK",
         "statusText":  "",
-        "ATTAname":    "WPT Sample ATTA",
-        "ATTAversion": 1,
-        "API":         myAPI,
-        "APIversion":  myAPIversion
+        "log":         "",
+        "results":     [ [ "PASS", "" ], 
+                         [ "FAIL", "Some diagnostic about the failure", "detailed logging"]
+                       ]
       }
       </pre>
     </section>
