@@ -299,8 +299,14 @@ then role: grid, celcount: 2, rowcount: 3
 
     <dl>
       <dt>Test Class</dt>
-      <dd>The category of thing being tested.  Examples include a <i>property</i>, <i>result</i> (of
-      a method call), or <i>event</i>.</dd>
+      <dd>The class of thing being tested.  Examples include a <i>property</i>, <i>result</i> (of
+      a method call), or <i>event</i>.  As a special case, a Test Class of <code>TBD</code> is a
+      placeholder that means
+      the assertions are "to be determined".  An ATTA that sees a
+      Test Class of <code>TBD</code> SHOULD respond with a result of "FAIL" and a message that includes
+      sufficient detail about the accessibility tree associated with the <code>element</code> in
+      question that a test developer could review that information and use it to develop the correct
+      assertions for a given platform.</dd>
       <dt>Test Type</dt>
       <dd>The <i>type</i> within the <i>Test Class</i>.  Examples include <i>role</i>, <i>name</i>,
       <i>subrole</i>, etc.</dd>
@@ -311,7 +317,7 @@ then role: grid, celcount: 2, rowcount: 3
       <code>contains</code>,
       <code>doesNotContain</code>,
       <code>isType</code>, and
-      <code>isAny</code>.</dd>A
+      <code>isAny</code>.</dd>
       <dt>Value</dt>
       <dd>A value (or value list) against which to evaluate using ASSERTION TYPE. If there are 
       multiple values, they are enclosed in brackets and separated with commas (e.g. [value1, value2,
