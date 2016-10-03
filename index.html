@@ -46,7 +46,7 @@ var respecConfig = {
         company: "Igalia, S.L.",
         companyURI: "http://www.igalia.com"
       },
-                { name: "Shane McCarron", url: 'https://www.spec-ops.io', 
+                { name: "Shane McCarron", url: 'https://www.spec-ops.io',
                   mailto: "shane@spec-ops.io",
                   company: "Spec-Ops", companyURL: "https://www.spec-ops.io" }
     ],
@@ -124,7 +124,7 @@ var respecConfig = {
 <section>
   <h2>Theory of Operation</h2>
   <p>In <a>WPT</a> a <dfn>parent window</dfn> controls
-  the selection of tests, and then opens a 
+  the selection of tests, and then opens a
   <dfn data-lt='test window'>child window</dfn> to execute the
   selected tests.  That child window uses a Javascript library to control test
   sequencing, reporting, management if windows, etc.  For most tests, that model looks
@@ -145,7 +145,7 @@ var respecConfig = {
   They include this assertion, and also include
   supporting information to inform the test system which aspects of the underlying
   systems need to be examined to evaluate the assertion.</p>
-  <p class="note">It is possible that in some environments an ATTA will 
+  <p class="note">It is possible that in some environments an ATTA will
   not be be available. Consequently, additional properties of the
   Testable Statement can help a manual tester understand how to
   perform a similar test without ATTA assistance.  Examples include
@@ -319,11 +319,11 @@ then role: grid, celcount: 2, rowcount: 3
       <code>isType</code>, and
       <code>isAny</code>.</dd>
       <dt>Value</dt>
-      <dd>A value (or value list) against which to evaluate using ASSERTION TYPE. If there are 
-      multiple values, they are enclosed in brackets and separated with commas (e.g. [value1, value2,
+      <dd>A value (or value list) against which to evaluate using ASSERTION TYPE. If there are
+      multiple values, they are enclosed in brackets and separated with commas (e.g., [value1, value2,
       value3]).</dd>
     </dl>
-    
+
     <p>The remainder of this section defines the specific contents.</p>
 
     <section id="S_assertions_ATK">
@@ -484,7 +484,8 @@ then role: grid, celcount: 2, rowcount: 3
         "ATTAname":    "WPT Sample ATTA",
         "ATTAversion": 1,
         "API":         myAPI,
-        "APIversion":  myAPIversion
+        "APIversion":  myAPIversion,
+        "log":         "formatted logging information"
       }
       </pre>
     </section>
@@ -494,15 +495,76 @@ then role: grid, celcount: 2, rowcount: 3
       ATTA is to evaluate against the <a>Accessibility API</a>.  For
       each assertion in the request, the ATTA is to return
       information on the result of checking the assertion.</p>
-      <p class="title">Request</p>
-      <pre class="example">
+      <dl>
+        <dt>name</dt>
+        <dd>The name of the test</dd>
+        <dt>element</dt>
+        <dd>The 'id' of an element that will be examined by the
+        ATTA</dd>
+        <dt>data</dt>
+        <dd>A JSON structure containing the a11y data to check. Note that this is an array where each member maps to a nested array of information from a 'row' in the testable statement. The exact structure and values of the information varies by Accessibility API, but in general have a structure like:
+        <dl>
+          <dt>class</dt>
+          <dd>The class of assertion to evaluate (e.g., state, property, result)</dd>
+          <dt>type</dt>
+          <dd>The type of item in the class</dd>
+          <dt>assertion</dt>
+          <dd>What we are asserting about this class+type</dd>
+          <dt>values</dt>
+          <dd>The value or values to evaluate with the
+          assertion.</dd>
+        </dl>
+        </dd>
+      </dl>
+
+      <p>Note that in order to make the comparison of test
+      results across platforms "apples to apples" similar, the
+      'rows' in the testable statement will be evaluated and
+      their results collected into a single result for the
+      overall 'test statement'. Any failure or other messages
+      will be included in the result for that overall 'test
+      statement'.</p>
+
+      <p>The reply for this message takes the form:</p>
+      <dl>
+        <dt>status</dt>
+        <dd>In indication of whether the ATTA could evaluate the
+        assertions or not.  Values are <code>OK</code> and
+        <code>ERROR</code></dd>
+        <dt>statusText</dt>
+        <dd>A message about any error</dd>
+        <dt>logdata</dt>
+        <dd>optional, ATTA-specific information about the
+        acceswsibility tree associated with the element being
+        evaluated.  This SHOULD be preformatted information that
+        can be embedded by the <a>ATTA Communication Module</a>
+        in the test page to assist a test developer in developing or
+        debugging a test.</dd>
+        <dt>results</dt>
+        <dd>An array of result arrays corresponding to each
+        array member in <code>data</code> above. The result
+        arrays have the following members:
+        <ol start="0">
+          <li>result (one of PASS or FAIL)</li>
+          <li>message (information that explains a failure)</li>
+          <li>logdata (optional ATTA-specific information showing
+          information about the acessibility tree that was
+          examined when evaluating the assertion. Used when
+          debugging or developing tests.)</li>
+        </ol>
+        </dd>
+      </dl>
+      <pre class="example" title="Example test request">
       {
-        "test":  "name of the overall test case",
-        "url":   "url from which the content is loaded"
+        "name": "subtest name",
+        "id":   "id of element to check",
+          "data": [
+            [ "thingClass", "thingType", "thingAssertion", "thingValue" ],
+            [ "thingClass", "thingType", "thingAssertion", "thingValue" ]
+         ]
       }
       </pre>
-      <p class="title">Response</p>
-      <pre class="example">
+      <pre class="example" title="Example test response">
       {
         "status":      "READY",
         "statusText":  "",
@@ -551,7 +613,7 @@ then role: grid, celcount: 2, rowcount: 3
     <dt><dfn data-lt="api mappings|api mapping|accessibility api mappings">Accessibility <abbr>API</abbr> Mapping</dfn></dt>
     <dd>A specification that defines the relationship between ARIA
     roles, properties, states, and events to their corresponding
-    aspects of a specific platform's implementation.</dt>
+    aspects of a specific platform's implementation.</dd>
     <dt><dfn>Accessibility Subtree</dfn></dt>
     <dd>
     <p>An <a>accessible object</a> in the <a>accessibility tree</a> and its descendants in that tree. It does not include objects which have relationships other than parent-child in that tree. For example, it does not include objects linked via <pref>aria-flowto</pref> unless those objects are also descendants in the <a>accessibility tree</a>.</p>
@@ -752,10 +814,11 @@ then role: grid, celcount: 2, rowcount: 3
   </dl>
 </section>
 <section id="S_future_plans" class="appendix">
-    <h2><dfn>Future Plans</dfn></h2>
-    <p>This section is meant to capture plans about the evolution of
-    this interface.</p>
+  <h2><dfn>Future Plans</dfn></h2>
+  <p>This section is meant to capture plans about the evolution of
+  this interface.</p>
+</section>
 </body>
 </html>
-<!-- vim: ts=2 sw=2 ai wm=10: 
+<!-- vim: ts=2 sw=2 ai wm=10:
 -->
