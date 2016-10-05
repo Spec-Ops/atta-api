@@ -479,8 +479,8 @@ then role: grid, celcount: 2, rowcount: 3
       <p>The reply for this message takes the form:</p>
       <dl>
         <dt>status</dt>
-        <dd>In indication of whether the ATTA could find the window in 
-        which the test will take place given the test name and url.  Values are 
+        <dd>In indication of whether the ATTA could find the window in
+        which the test will take place given the test name and url.  Values are
         <code>READY</code> or <code>ERROR</code></dd>
         <dt>statusText</dt>
         <dd>A message about any error</dd>
@@ -490,7 +490,7 @@ then role: grid, celcount: 2, rowcount: 3
         <dd>A version string about the ATTA</dd>
         <dt>API</dt>
         <dd>The name of the <a>Accessibility API</a> supported by ATTA</dd>
-        <dt>APIversion<dt>
+        <dt>APIversion</dt>
         <dd>A version string about the Accessibility API</dd>
         <dt>log</dt>
         <dd>optional, ATTA-specific information about the
@@ -570,17 +570,20 @@ then role: grid, celcount: 2, rowcount: 3
         in the test page to assist a test developer in developing or
         debugging a test.</dd>
         <dt>results</dt>
-        <dd>An array of result arrays corresponding to each
+        <dd>A list of result objects corresponding to each
         array member in <code>data</code> above. The result
-        arrays have the following members:
-        <ol start="0">
-          <li>result (one of PASS or FAIL)</li>
-          <li>message (information that explains a failure)</li>
-          <li>logging (optional ATTA-specific information showing
+        objects have the following members:
+        <dl>
+          <dt>result</dt>
+          <dd>one of PASS or FAIL</dd>
+          <dt>message</dt>
+          <dd>information that explains a failure</dd>
+          <dt>log</dt>
+          <dd>optional ATTA-specific information showing
           information about the acessibility tree that was
           examined when evaluating the assertion. Used when
-          debugging or developing tests.)</li>
-        </ol>
+          debugging or developing tests.)</dd>
+        </dl>
         </dd>
       </dl>
       <pre class="example" title="Example test request">
@@ -597,8 +600,14 @@ then role: grid, celcount: 2, rowcount: 3
         "status":      "OK",
         "statusText":  "",
         "log":         "",
-        "results":     [ [ "PASS", "" ], 
-                         [ "FAIL", "Some diagnostic about the failure", "detailed logging"]
+        "results":     [
+                         { "result":  "PASS",
+                           "log":     "Logging information about test run"
+                         },
+                         { "result":  "FAIL",
+                           "message": "Some diagnostic about the failure",
+                           "log":     "detailed logging"
+                         }
                        ]
       }
       </pre>
