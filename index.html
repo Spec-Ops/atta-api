@@ -577,12 +577,14 @@ then role: grid, celcount: 2, rowcount: 3
           <dt>result</dt>
           <dd>one of PASS or FAIL</dd>
           <dt>message</dt>
-          <dd>information that explains a failure</dd>
+          <dd>information that explains a failure (if any). This information is attached to the failure information along with the assertion
+          that was being evaluated so a tester can help to correct the problem.</dd>
           <dt>log</dt>
           <dd>optional ATTA-specific information showing
           information about the acessibility tree that was
-          examined when evaluating the assertion. Used when
-          debugging or developing tests.)</dd>
+          examined when evaluating the assertion. When there is log data returned
+          it is augmented with the information about the assertion being
+          examined.  Used when debugging or developing tests.</dd>
         </dl>
         </dd>
       </dl>
