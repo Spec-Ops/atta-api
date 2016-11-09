@@ -271,7 +271,7 @@ then role: grid, celcount: 2, rowcount: 3
     }
   </pre>
 
-  <p>The system with automatically generate [[WPT]] compatible test
+  <p>The system will automatically generate [[WPT]] compatible test
   cases that are formatted as defined in this specification.  Test
   cases can also be written by hand.  Examples and a template are
   available in the <code>wai-aria/tools</code> directory of the WPT
@@ -326,6 +326,11 @@ then role: grid, celcount: 2, rowcount: 3
       <p class='note'>At this time commas embedded in values within a value list are NOT supported.</p></dd>
 
     </dl>
+
+    <p class="note" title="Event Tests">The TEST CLASS of event is special in that the each occurrence of the TEST TYPE type establishes a
+    context for the next event rows in the table. Each subsequent event row is an assertion about an event of the type referenced in that
+    first special row. That context continues until the end of the table, until a row that is NOT an event assertion, or until a row that is
+    an event but with a TEST TYPE of type.</p>
 
     <p>The remainder of this section defines the specific contents.</p>
 
@@ -517,6 +522,44 @@ then role: grid, celcount: 2, rowcount: 3
         "ATTAversion": 1,
         "API":         myAPI,
         "APIversion":  myAPIversion,
+        "log":         "formatted logging information"
+      }
+      </pre>
+    </section>
+    <section>
+      <h4>listen</h4>
+      <p>The listen message is optional.  If it is sent, it means one or more subtests are going to have assertions that need to be
+      evaluated against events, and the ATTA is expected to listen for those events.</p>
+      <dl>
+        <dt>events</dt>
+        <dd>A list of event names the ATTA should capture for the duration of this test.</dd>
+      </dl>
+
+      <p>The reply for this message takes the form:</p>
+      <dl>
+        <dt>status</dt>
+        <dd>In indication of whether the ATTA could set up listeners for
+        the requested events.
+        Values are <code>READY</code> or <code>ERROR</code></dd>
+        <dt>statusText</dt>
+        <dd>A message about any error</dd>
+        <dt>log</dt>
+        <dd>optional, ATTA-specific information about the
+        events being listened for.
+        This SHOULD be preformatted information that
+        can be embedded by the <a>ATTA Communication Module</a>
+        in the test page to assist a test developer in developing or
+        debugging a test.</dd>
+      </dl>
+      <pre class="example" title="Example listen request">
+      {
+        "events":  [ "focused", "expanded", "selected" ]
+      }
+      </pre>
+      <pre class="example" title="Example listen response">
+      {
+        "status":      "READY",
+        "statusText":  "",
         "log":         "formatted logging information"
       }
       </pre>
