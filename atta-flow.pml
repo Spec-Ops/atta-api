@@ -18,7 +18,7 @@ Participant "Platform\nA11Y Layer" as atapi
   test->comm: initialize
   comm->test: Register DOMContentLoaded\nevent handler
   test->comm: DOMContentLoaded fires
-  
+
   comm->atta: start (name, URI)
 
   Note right
@@ -28,6 +28,10 @@ Participant "Platform\nA11Y Layer" as atapi
 
   atta<->atapi: Interrogate window\nand environment
   atta->comm: READY (API name, etc)
+
+  comm->atta: listen (events)
+  atta<->atapi: Setup event listeners
+  atta->comm: READY
 
     group step 1
     comm->atta: test (element, things to look for)
