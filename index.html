@@ -242,6 +242,7 @@ then role: grid, celcount: 2, rowcount: 3
   Beyond this, the testable statement needs to show how these conditions are
   evaluated through each defined <a>API mapping</a>. An example of one such would be:</p>
   <pre class="example">
+  |colspan=5|element test
   |-
   |rowspan=4|ATK
   |property
@@ -263,6 +264,8 @@ then role: grid, celcount: 2, rowcount: 3
   |interface
   |contains
   |Selection
+  |-
+  |colspan=5|attribute test2:aria-selected "true"
   </pre>
 
   <p>This is an example of a MediaWiki-style table fragment.  In this case it is a
@@ -323,6 +326,13 @@ then role: grid, celcount: 2, rowcount: 3
              ],
              ....
           }
+        },
+        {
+          "type":  "test",
+          "title": "step 2",
+          "element": "test2",
+          "attribute": "aria-selected",
+          "value": "true"
         }
       ]
     }
@@ -451,6 +461,21 @@ then role: grid, celcount: 2, rowcount: 3
     </pre>
   </section>
   <section>
+    <h3>attribute</h3>
+    <p>An "attribute" step sets or clears an attribute on an
+    element.</p>
+    <pre>
+    {
+      "type": "attribute",
+      "element": "test",
+      "title": "set attribute aria-selected on element test",
+      "attribute": "aria-selected",
+      "value": "true"
+    }
+    </pre>
+  </section>
+
+  <section>
     <h3>event</h3>
     <p>An "event" entry is a declarative way to fire an event at a
     specific element.</p>
@@ -463,6 +488,7 @@ then role: grid, celcount: 2, rowcount: 3
     }
     </pre>
   </section>
+
   <section>
     <h3>script</h3>
     <p>A "script" step includes javascript code that will be
@@ -641,8 +667,8 @@ then role: grid, celcount: 2, rowcount: 3
     </section>
     -->
     <section>
-      <h4>listen</h4>
-      <p>The listen message is optional.  If it is sent, it means one or more subtests are going to have assertions that need to be
+      <h4>startlisten</h4>
+      <p>The startlisten message is optional.  If it is sent, it means one or more subtests are going to have assertions that need to be
       evaluated against events, and the ATTA is expected to listen for those events.</p>
       <dl>
         <dt>events</dt>
@@ -665,12 +691,38 @@ then role: grid, celcount: 2, rowcount: 3
         in the test page to assist a test developer in developing or
         debugging a test.</dd>
       </dl>
-      <pre class="example" title="Example listen request">
+      <pre class="example" title="Example startlisten request">
       {
         "events":  [ "focused", "expanded", "selected" ]
       }
       </pre>
-      <pre class="example" title="Example listen response">
+      <pre class="example" title="Example startlisten response">
+      {
+        "status":      "READY",
+        "statusText":  "",
+        "log":         "formatted logging information"
+      }
+      </pre>
+    </section>
+    <section>
+      <h4>stoplisten</h4>
+      <p>The stoplisten message is optional.  If it is sent, it means the ATTA must stop listening for any events that it has been asked
+      to previously listen for.</p>
+      <p>The reply for this message takes the form:</p>
+      <dl>
+        <dt>status</dt>
+        <dd>In indication of whether the ATTA stopped listening.
+        Values are <code>READY</code> or <code>ERROR</code></dd>
+        <dt>statusText</dt>
+        <dd>A message about any error</dd>
+        <dt>log</dt>
+        <dd>optional, ATTA-specific information about the operation.
+        This SHOULD be preformatted information that
+        can be embedded by the <a>ATTA Communication Module</a>
+        in the test page to assist a test developer in developing or
+        debugging a test.</dd>
+      </dl>
+      <pre class="example" title="Example stoplisten response">
       {
         "status":      "READY",
         "statusText":  "",
