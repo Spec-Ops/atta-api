@@ -252,6 +252,11 @@ then role: grid, celcount: 2, rowcount: 3
   |-
   |property
   |objectAttributes
+  |isType
+  |List
+  |-
+  |property
+  |objectAttributes
   |contains
   |xml-roles:grid
   |-
@@ -292,6 +297,12 @@ then role: grid, celcount: 2, rowcount: 3
                    "role",
                    "is",
                    "ROLE_TABLE"
+                ],
+                [
+                   "property"
+                   "objectAttributes",
+                   "isType",
+                   "List"
                 ],
                 [
                    "property"
@@ -394,8 +405,39 @@ then role: grid, celcount: 2, rowcount: 3
       <dd>A value (or value list) against which to evaluate using ASSERTION TYPE. If there are
       multiple values, they are enclosed in brackets and separated with commas and optional whitespace (e.g., [value1, value2,
       value3]).  When an Assertion Type of <i>exists</i> is used, legal values are <i>true</i> and <i>false</i>.
-      <p class='note'>At this time commas embedded in values within a value list are NOT supported.</p></dd>
-
+      <p class='note'>At this time commas embedded in values within a value list are NOT supported.</p>
+      <p>In most cases, the value is untyped.  However, when asserting the "type"
+      of something via the isType Assertion Type, legal values include:</p>
+      <dl>
+        <dt>Undefined</dt>
+        <dd>The system has no value for the item.</dd>
+        <dt>Boolean</dt>
+        <dd>The item is either true or false.</dd>
+        <dt>Constant</dt>
+        <dd>The item is represented in the implementation as static reference to
+        a value (e.g., an element of an <code>enum</code> in C, a
+        <code>Symbol</code> in Javascript).</dd>
+        <dt>Number</dt>
+        <dd>The item is "numeric" in that it is something on which mathematical
+        operations can be performed. <span class='note'>There is no distinction between Integer and
+          non-Integer values at this time.</span></dd>
+        <dt>List</dt>
+        <dd>The item is an collection (e.g., dictionary, hash, list, array)
+        in which there are zero or more values represented as an index and a
+        value associated with that index.
+        <span class='note'>For these purposes,
+          whether something is a List or a reference to a List is an
+          implementation detail. Moreover, while Lists are typically iterable,
+          whether that iteration has predictable order is also an implementation
+          detail.</span>
+        </dd>
+        <dt>Object</dt>
+        <dd>The item is an "Accessible Object" - a representation of the
+        Accessibility properties associated with a component of system (e.g., a
+        DOM element).</dd>
+        <dt>String</dt>
+        <dd>The item is a series of characters in a system-defined encoding.</dd>
+      </dl>
     </dl>
 
     <p class="note" title="Event Tests">The TEST CLASS of event is special in that the each occurrence of the TEST TYPE type establishes a
