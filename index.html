@@ -242,6 +242,8 @@ then role: grid, celcount: 2, rowcount: 3
   Beyond this, the testable statement needs to show how these conditions are
   evaluated through each defined <a>API mapping</a>. An example of one such would be:</p>
   <pre class="example">
+  |colspan=5|event test:focus
+  |-
   |colspan=5|element test
   |-
   |rowspan=4|ATK
@@ -286,8 +288,14 @@ then role: grid, celcount: 2, rowcount: 3
       "description": "When an element has a role with a value of 'grid', its aria-rowcount and aria-colcount attributes descibe the dimensions of the grid represented by that element and its contents.",
       "steps": [
       {
-        "type":  "test",
+        "type":  "event",
         "title": "step 1",
+        "element": "test",
+        "event": "focus",
+      },
+      {
+        "type":  "test",
+        "title": "step 2",
         "element": "test",
           "test" : {
              "ATK" : [
@@ -340,7 +348,7 @@ then role: grid, celcount: 2, rowcount: 3
         },
         {
           "type":  "attribute",
-          "title": "step 2",
+          "title": "step 3",
           "element": "test2",
           "attribute": "aria-selected",
           "value": "true"
