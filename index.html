@@ -164,7 +164,7 @@ function setup() {
   that supports Web Platform Accessibility and exposes that support
   through a platform <a>Accessibility API</a> can be tested
   automatically.  In addition, it defines a simplified declarative
-  grammar that can be used to define the tests themselves &emdash;
+  grammar that can be used to define the tests themselves &mdash;
   thereby simplifying the overall task of writing the tests in the
   first place.
   </p>
@@ -189,7 +189,7 @@ function setup() {
   <img style="width: 95%; align: center" src="wpt-dialog.svg" alt="Simple WPT Dialog Example">
   <p>Through this document and the tools that it defines,
   ARIA testing extends this model by connecting the child window to an
-  <a>ATTA</a> <abbr title="Accessible Technology Test Adapter">ATTA</abbr> through another
+  <abbr title="Accessible Technology Test Adapter">ATTA</abbr> through another
   Javascript library and a well defined protocol and set of messages. The
   diagram below shows this expansion.</p>
   <img style="width: 95%; align: center" src="dialog.svg" alt="WPT Dialog with ATTA">
@@ -219,7 +219,7 @@ SpecURL:  https://www.w3.org/TR/wai-aria11
 ==== Description ====
 
 When an element has a role with a value of 'grid', its aria-rowcount
-and aria-colcount attributes descibe the dimensions of the grid
+and aria-colcount attributes describe the dimensions of the grid
 represented by that element and its contents.
 
 Reference: #some_id
@@ -233,7 +233,7 @@ If given
      &lt;/span&gt;
    &lt;/div&gt;
   &lt;/div&gt;
-then role: grid, celcount: 2, rowcount: 3
+then role: grid, colcount: 2, rowcount: 3
 &lt;/pre&gt;
   </pre>
   <p>This example presents a description of the test's purpose, a
@@ -448,7 +448,7 @@ then role: grid, celcount: 2, rowcount: 3
       </dl>
     </dl>
 
-    <p class="note" title="Event Tests">The TEST CLASS of event is special in that the each occurrence of the TEST TYPE type establishes a
+    <p class="note" title="Event Tests">The TEST CLASS of event is special in that each occurrence of the TEST TYPE type establishes a
     context for the next event rows in the table. Each subsequent event row is an assertion about an event of the type referenced in that
     first special row. That context continues until the end of the table, until a row that is NOT an event assertion, or until a row that is
     an event but with a TEST TYPE of type.</p>
@@ -688,8 +688,8 @@ then role: grid, celcount: 2, rowcount: 3
       <p>The reply for this message takes the form:</p>
       <dl>
         <dt>status</dt>
-        <dd>In indication of whether the ATTA could perform the activities requested.
-        Values are <code>READY</code> or <code>ERROR</code></dd>
+        <dd>An indication of whether the ATTA could perform the activities requested.
+        Values are <code>READY</code> or <code>ERROR</code>.</dd>
         <dt>statusText</dt>
         <dd>A message about any error</dd>
         <dt>log</dt>
@@ -732,13 +732,13 @@ then role: grid, celcount: 2, rowcount: 3
       <p>The reply for this message takes the form:</p>
       <dl>
         <dt>status</dt>
-        <dd>In indication of whether the ATTA could set up listeners for
+        <dd>An indication of whether the ATTA could set up listeners for
         the requested events.
-        Values are <code>READY</code> or <code>ERROR</code></dd>
+        Values are <code>READY</code> or <code>ERROR</code>.</dd>
         <dt>statusText</dt>
         <dd>A message about any error</dd>
         <dt>log</dt>
-        <dd>optional, ATTA-specific information about the
+        <dd>Optional, ATTA-specific information about the
         events being listened for.
         This SHOULD be preformatted information that
         can be embedded by the <a>ATTA Communication Module</a>
@@ -765,10 +765,10 @@ then role: grid, celcount: 2, rowcount: 3
       <p>The reply for this message takes the form:</p>
       <dl>
         <dt>status</dt>
-        <dd>In indication of whether the ATTA stopped listening.
-        Values are <code>READY</code> or <code>ERROR</code></dd>
+        <dd>An indication of whether the ATTA stopped listening.
+        Values are <code>READY</code> or <code>ERROR</code>.</dd>
         <dt>statusText</dt>
-        <dd>A message about any error</dd>
+        <dd>A message about any error.</dd>
         <dt>log</dt>
         <dd>optional, ATTA-specific information about the operation.
         This SHOULD be preformatted information that
@@ -800,11 +800,11 @@ then role: grid, celcount: 2, rowcount: 3
         <dd>A JSON structure containing the a11y data to check. Note that this is an array where each member maps to a nested array of information from a 'row' in the testable statement. The exact structure and values of the information varies by Accessibility API, but in general have a structure like:
         <dl>
           <dt>class</dt>
-          <dd>The class of assertion to evaluate (e.g., state, property, relation, result)</dd>
+          <dd>The class of assertion to evaluate (e.g., state, property, relation, result).</dd>
           <dt>type</dt>
-          <dd>The type of item in the class</dd>
+          <dd>The type of item in the class.</dd>
           <dt>assertion</dt>
-          <dd>What we are asserting about this class+type</dd>
+          <dd>What we are asserting about this class+type.</dd>
           <dt>values</dt>
           <dd>The value or values to evaluate with the
           assertion.</dd>
@@ -823,13 +823,13 @@ then role: grid, celcount: 2, rowcount: 3
       <p>The reply for this message takes the form:</p>
       <dl>
         <dt>status</dt>
-        <dd>In indication of whether the ATTA could evaluate the
+        <dd>An indication of whether the ATTA could evaluate the
         assertions or not.  Values are <code>OK</code> and
-        <code>ERROR</code></dd>
+        <code>ERROR</code>.</dd>
         <dt>statusText</dt>
-        <dd>A message about any error</dd>
+        <dd>A message about any error.</dd>
         <dt>log</dt>
-        <dd>optional, ATTA-specific information about the
+        <dd>Optional, ATTA-specific information about the
         acceswsibility tree associated with the element being
         evaluated.  This SHOULD be preformatted information that
         can be embedded by the <a>ATTA Communication Module</a>
@@ -841,12 +841,12 @@ then role: grid, celcount: 2, rowcount: 3
         objects have the following members:
         <dl>
           <dt>result</dt>
-          <dd>one of PASS or FAIL</dd>
+          <dd>one of PASS or FAIL.</dd>
           <dt>message</dt>
-          <dd>information that explains a failure (if any). This information is attached to the failure information along with the assertion
+          <dd>Information that explains a failure (if any). This information is attached to the failure information along with the assertion
           that was being evaluated so a tester can help to correct the problem.</dd>
           <dt>log</dt>
-          <dd>optional ATTA-specific information showing
+          <dd>Optional, ATTA-specific information showing
           information about the acessibility tree that was
           examined when evaluating the assertion. When there is log data returned
           it is augmented with the information about the assertion being
